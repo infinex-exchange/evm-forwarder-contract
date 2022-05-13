@@ -4,18 +4,7 @@ pragma solidity ^0.8;
 import "./IERC20.sol";
 
 contract Forwarder {
-    address public target;
-
-    // Save deployer address after deploying
-    constructor(address _target) {
-        target = _target;
-    }
-    
-    // Save deployer address after cloning
-    function init(address _target) external {
-        require(target == address(0));
-        target = _target;
-    }
+    address constant public target = 0x0000000000000000000000000000000000000000;
     
     // Flush ETH sent before deployment
     function flush() external {

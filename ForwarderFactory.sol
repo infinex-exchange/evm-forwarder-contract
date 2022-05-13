@@ -10,11 +10,7 @@ contract ForwarderFactory {
     constructor() {
         owner = msg.sender;
         
-        bytes memory deploymentData = abi.encodePacked(
-            type(Forwarder).creationCode,
-            uint256(uint160(owner))
-        );
-        
+        bytes memory deploymentData = abi.encodePacked(type(Forwarder).creationCode);
         address _instance;
 
         assembly {
@@ -42,8 +38,5 @@ contract ForwarderFactory {
         }
         
         require(address(forwarder) != address(0));
-        
-        forwarder.init(owner);
-        require(forwarder.target() == owner);
     }
 }
