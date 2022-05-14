@@ -5,29 +5,19 @@ import "./Forwarder.sol";
 
 contract ForwarderFactory {
     address public owner;
-    address public instance;
+    Forwarder public original;
 
     constructor() {
         owner = msg.sender;
         
-        bytes memory deploymentData = abi.encodePacked(type(Forwarder).creationCode);
-        address _instance;
-
-        assembly {
-            _instance := create2(
-                0x0, add(0x20, deploymentData), mload(deploymentData), 0
-            )
-        }
-        
-        require(_instance != address(0));
-        instance = _instance;
+        original = new Forwarder();
+        require(address(original) != address(0));
     }
     
-    function get(uint256 salt) external returns (Forwarder forwarder) {
+    function createClone(uint256 salt) external returns (Forwarder forwarder) {
         require(msg.sender == owner);
-        require(instance != address(0));
         
-        bytes20 targetBytes = bytes20(instance);
+        bytes20 targetBytes = bytes20(address(original));
 
         assembly {
             let clone := mload(0x40)
