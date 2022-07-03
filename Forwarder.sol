@@ -23,8 +23,28 @@ contract Forwarder {
         if(forwarderBalance == 0) {
             revert();
         }
-        if(!tokenContract.transfer(target, forwarderBalance)) {
+        tokenContract.transfer(target, forwarderBalance);
+    }
+    
+    // Any value ETH transfer
+    function transferTo(address payable to, uint256 amount) external {
+        require(msg.sender == target);
+        
+        if(address(this).balance < amount) {
             revert();
         }
+        to.transfer(amount);
+    }
+    
+    // Any value token transfer
+    function transferTokenTo(address tokenContractAddress, address to, uint256 amount) external {
+        require(msg.sender == target);
+        
+        IERC20 tokenContract = IERC20(tokenContractAddress);
+        uint256 forwarderBalance = tokenContract.balanceOf(address(this));
+        if(forwarderBalance < amount) {
+            revert();
+        }
+        tokenContract.transfer(to, amount);
     }
 }
