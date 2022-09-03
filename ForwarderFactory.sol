@@ -9,7 +9,9 @@ contract ForwarderFactory {
 
     constructor() {
         owner = msg.sender;
+        
         original = new Forwarder();
+        require(address(original) != address(0));
     }
     
     function createClone(uint256 salt) external returns (Forwarder forwarder) {
@@ -24,5 +26,7 @@ contract ForwarderFactory {
             mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
             forwarder := create2(0, clone, 0x37, salt)
         }
+        
+        require(address(forwarder) != address(0));
     }
 }
